@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.kotlinapimybatis.mapper.TodoMapper">
+	<select id="getTodos"
+	        parameterType="com.example.kotlinapimybatis.domain.TodoRequest"
+	        resultType="com.example.kotlinapimybatis.domain.TodoResponse">
+
+		SELECT ID
+		, TITLE
+		, DESCRIPTION
+		, COMPLETED
+		FROM TODO
+		<where>
+			<if test="title != null and title != ''">
+				AND TITLE LIKE CONCAT('%', #{title}, '%')
+			</if>
+			<if test="description != null and description != ''">
+				AND DESCRIPTION LIKE CONCAT('%', #{description}, '%')
+			</if>
+			<if test="completed != null">
+				AND COMPLETED = #{completed}
+			</if>
+		</where>
+
+	</select>
+
+	<select id="getTodoById"
+	        parameterType="long"
+	        resultType="com.example.kotlinapimybatis.domain.TodoResponse">
+
+		SELECT *
+		FROM TODO
+		WHERE ID = #{id}
+
+	</select>
+
+	<insert id="insertTodo"
+	        useGeneratedKeys="true"
+	        keyProperty="id"
+	        parameterType="com.example.kotlinapimybatis.domain.TodoRequest">
+
+		INSERT
+		INTO TODO
+		( TITLE
+		, DESCRIPTION
+		, COMPLETED)
+		VALUES ( #{title}
+		       , #{description}
+		       , #{completed})
+
+	</insert>
+
+	<update id="updateTodo"
+	        parameterType="com.example.kotlinapimybatis.domain.TodoRequest">
+
+		UPDATE TODO
+		SET TITLE       = #{title}
+		  , DESCRIPTION = #{description}
+		  , COMPLETED   = #{completed}
+		WHERE ID = #{id}
+
+	</update>
+
+	<delete id="deleteTodoById"
+	        parameterType="long">
+
+		DELETE
+		FROM TODO
+		WHERE ID = #{id}
+
+	</delete>
+</mapper>
